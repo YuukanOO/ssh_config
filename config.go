@@ -8,7 +8,7 @@
 // the host name to match on ("example.com"), and the second argument is the key
 // you want to retrieve ("Port"). The keywords are case insensitive.
 //
-// 		port := ssh_config.Get("myhost", "Port")
+//	port := ssh_config.Get("myhost", "Port")
 //
 // You can also manipulate an SSH config file and then print it or write it back
 // to disk.
@@ -588,6 +588,10 @@ func (h *Host) String() string {
 		}
 		buf.WriteString(h.spaceBeforeComment)
 		if h.EOLComment != "" {
+			if h.spaceBeforeComment == "" {
+				buf.WriteString(" ") // Force at least one space or the config file will not be valid
+			}
+
 			buf.WriteByte('#')
 			buf.WriteString(h.EOLComment)
 		}
@@ -599,6 +603,8 @@ func (h *Host) String() string {
 	}
 	return buf.String()
 }
+
+func (h *Host) IsImplicit() bool { return h.implicit }
 
 // Node represents a line in a Config.
 type Node interface {
